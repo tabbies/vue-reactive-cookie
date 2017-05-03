@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './src/vue-reactive-cookie.js',
+  entry: './index.js',
 
   output: {
     path: require('path').resolve(__dirname, 'dist'),

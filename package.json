@@ -2,7 +2,7 @@
   "name": "vue-reactive-cookie",
   "version": "1.0.0",
   "description": "A Vue.js reactive cookie plugin",
-  "main": "index.js",
+  "main": "src/vue-reactive-cookie.js",
   "repository": "https://github.com/tabbies/vue-reactive-cookie.git",
   "author": "Pavel Belyaev <ksyddd@gmail.com>",
   "license": "MIT",
@@ -14,5 +14,8 @@
     "babel-loader": "^7.0.0",
     "babel-preset-es2015": "^6.24.1",
     "webpack": "^2.4.1"
+  },
+  "dependencies": {
+    "js-cookie": "^2.1.4"
   }
 }
