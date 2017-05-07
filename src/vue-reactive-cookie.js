@@ -1,16 +1,11 @@
 import Cookies from 'js-cookie';
 
 export default {
-  install(Vue, options = {}) {
-    this.options = options;
+  install(Vue) {
     this.Vue = Vue;
     this.instance = this.createNewVueInstance();
     this.defineVueInstanceProperties();
     this.updateCookiesInstance();
-
-    if (this.options.autoupdate === true) {
-      this.runInterval();
-    }
   },
 
   createNewVueInstance() {
@@ -22,25 +17,23 @@ export default {
   },
 
   defineVueInstanceProperties() {
-    Object.defineProperty(this.Vue.prototype, '$cookies', {get: () => this.instance.cookies});
-    Object.defineProperty(this.Vue.prototype, '$setCookie', {get: () => this.setCookie.bind(this)});
-    Object.defineProperty(this.Vue.prototype, '$removeCookie', {get: () => this.removeCookie.bind(this)});
+    Object.defineProperty(this.Vue.prototype, '$cookies', { get: () => this.instance.cookies });
+    Object.defineProperty(this.Vue.prototype, '$setCookie', { get: () => this.setCookie.bind(this) });
+    Object.defineProperty(this.Vue.prototype, '$removeCookie', { get: () => this.removeCookie.bind(this) });
   },
 
-  runInterval() {
-    setInterval(() => {
-      this.updateCookiesInstance();
-    }, this.options.autoupdateInterval || 1000);
-  },
-
-  updateCookiesInstance() {
-    this.instance.cookies = Cookies.get();
+  updateCookiesInstance(name = null) {
+    if (null !== name) {
+      this.instance.cookies[name] = Cookies.get(name);
+    } else {
+      this.instance.cookies = Cookies.get();
+    }
   },
 
   setCookie(name, value, options = {}) {
     Cookies.set(name, value, options);
 
-    this.updateCookiesInstance();
+    this.updateCookiesInstance(name);
   },
 
   removeCookie(name) {
