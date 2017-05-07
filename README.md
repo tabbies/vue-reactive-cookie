@@ -55,7 +55,7 @@ new Vue({
 
 ### $setCookie(name, value, options)
 
-Create a cookie. List of available options is here: [github.com/js-cookie/js-cookie#cookie-attributes](https://github.com/js-cookie/js-cookie#cookie-attributes)
+Creates a cookie. The list of available options are here: [github.com/js-cookie/js-cookie#cookie-attributes](https://github.com/js-cookie/js-cookie#cookie-attributes)
 
 ### $removeCookie(name)
 
