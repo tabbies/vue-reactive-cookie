@@ -204,14 +204,8 @@ var vueReactiveCookie = {
     Object.defineProperty(this.Vue.prototype, '$removeCookie', { get: function () { return this$1.removeCookie.bind(this$1); } });
   },
 
-  updateCookiesInstance: function updateCookiesInstance(name) {
-    if ( name === void 0 ) name = null;
-
-    if (null !== name) {
-      this.instance.cookies[name] = js_cookie.get(name);
-    } else {
-      this.instance.cookies = js_cookie.get();
-    }
+  updateCookiesInstance: function updateCookiesInstance() {
+    this.instance.cookies = js_cookie.get();
   },
 
   setCookie: function setCookie(name, value, options) {
@@ -219,7 +213,7 @@ var vueReactiveCookie = {
 
     js_cookie.set(name, value, options);
 
-    this.updateCookiesInstance(name);
+    this.updateCookiesInstance();
   },
 
   removeCookie: function removeCookie(name) {
