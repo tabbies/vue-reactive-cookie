@@ -22,18 +22,14 @@ export default {
     Object.defineProperty(this.Vue.prototype, '$removeCookie', { get: () => this.removeCookie.bind(this) });
   },
 
-  updateCookiesInstance(name = null) {
-    if (null !== name) {
-      this.instance.cookies[name] = Cookies.get(name);
-    } else {
-      this.instance.cookies = Cookies.get();
-    }
+  updateCookiesInstance() {
+    this.instance.cookies = Cookies.get();
   },
 
   setCookie(name, value, options = {}) {
     Cookies.set(name, value, options);
 
-    this.updateCookiesInstance(name);
+    this.updateCookiesInstance();
   },
 
   removeCookie(name) {
