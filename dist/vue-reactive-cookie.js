@@ -181,11 +181,27 @@ var js_cookie = createCommonjsModule(function (module, exports) {
 });
 
 var vueReactiveCookie = {
-  install: function install(Vue) {
+  install: function install(Vue, options) {
     this.Vue = Vue;
+    this.convertJSON = typeof options.convertJSON !== 'undefined' ? options.convertJSON : false;
+    this.cookies = this.createNewCookieInstance();
     this.instance = this.createNewVueInstance();
     this.defineVueInstanceProperties();
     this.updateCookiesInstance();
+  },
+
+  createNewCookieInstance: function createNewCookieInstance() {
+    var this$1 = this;
+
+    return js_cookie.withConverter(function (value) {
+      var decodedValue = decodeURIComponent(value);
+
+      if (this$1.convertJSON && this$1.isJSON(decodedValue)) {
+        return JSON.parse(decodedValue);
+      }
+
+      return value;
+    });
   },
 
   createNewVueInstance: function createNewVueInstance() {
@@ -205,19 +221,31 @@ var vueReactiveCookie = {
   },
 
   updateCookiesInstance: function updateCookiesInstance() {
-    this.instance.cookies = js_cookie.get();
+    this.instance.cookies = this.cookies.get();
+  },
+
+  isJSON: function isJSON(value) {
+    if (0 === value.trim().length) {
+      return false;
+    }
+
+    value = value.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@');
+    value = value.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+    value = value.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+         
+    return (/^[\],:{}\s]*$/).test(value);
   },
 
   setCookie: function setCookie(name, value, options) {
     if ( options === void 0 ) options = {};
 
-    js_cookie.set(name, value, options);
+    this.cookies.set(name, value, options);
 
     this.updateCookiesInstance();
   },
 
   removeCookie: function removeCookie(name) {
-    js_cookie.remove(name);
+    this.cookies.remove(name);
 
     this.updateCookiesInstance();
   },
