@@ -1,6 +1,6 @@
 {
   "name": "vue-reactive-cookie",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Vue.js reactive cookie plugin",
   "main": "dist/vue-reactive-cookie.js",
   "repository": "https://github.com/tabbies/vue-reactive-cookie.git",
