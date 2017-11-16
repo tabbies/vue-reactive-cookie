@@ -1,11 +1,27 @@
 import Cookies from 'js-cookie';
 
 export default {
-  install(Vue) {
+  install(Vue, options = {}) {
     this.Vue = Vue;
+    this.convertJSON = typeof options.convertJSON !== 'undefined' ? options.convertJSON : false;
+    this.cookies = this.createNewCookiesInstance();
     this.instance = this.createNewVueInstance();
     this.defineVueInstanceProperties();
     this.updateCookiesInstance();
+  },
+
+  createNewCookiesInstance() {
+    return Cookies.withConverter(value => {
+      if (this.convertJSON) {
+        const decodedValue = decodeURIComponent(value);
+
+        if (this.isJSON(decodedValue)) {
+          return JSON.parse(decodedValue);
+        }
+      }
+
+      return value;
+    });
   },
 
   createNewVueInstance() {
@@ -23,17 +39,29 @@ export default {
   },
 
   updateCookiesInstance() {
-    this.instance.cookies = Cookies.get();
+    this.instance.cookies = this.cookies.get();
+  },
+
+  isJSON(value) {
+    if (0 === value.trim().length) {
+      return false;
+    }
+
+    value = value.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@');
+    value = value.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+    value = value.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+         
+    return (/^[\],:{}\s]*$/).test(value);
   },
 
   setCookie(name, value, options = {}) {
-    Cookies.set(name, value, options);
+    this.cookies.set(name, value, options);
 
     this.updateCookiesInstance();
   },
 
   removeCookie(name) {
-    Cookies.remove(name);
+    this.cookies.remove(name);
 
     this.updateCookiesInstance();
   },
