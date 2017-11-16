@@ -1,21 +1,23 @@
 import Cookies from 'js-cookie';
 
 export default {
-  install(Vue, options) {
+  install(Vue, options = {}) {
     this.Vue = Vue;
     this.convertJSON = typeof options.convertJSON !== 'undefined' ? options.convertJSON : false;
-    this.cookies = this.createNewCookieInstance();
+    this.cookies = this.createNewCookiesInstance();
     this.instance = this.createNewVueInstance();
     this.defineVueInstanceProperties();
     this.updateCookiesInstance();
   },
 
-  createNewCookieInstance() {
+  createNewCookiesInstance() {
     return Cookies.withConverter(value => {
-      const decodedValue = decodeURIComponent(value);
+      if (this.convertJSON) {
+        const decodedValue = decodeURIComponent(value);
 
-      if (this.convertJSON && this.isJSON(decodedValue)) {
-        return JSON.parse(decodedValue);
+        if (this.isJSON(decodedValue)) {
+          return JSON.parse(decodedValue);
+        }
       }
 
       return value;

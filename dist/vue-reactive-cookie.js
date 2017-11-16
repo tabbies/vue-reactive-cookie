@@ -182,22 +182,26 @@ var js_cookie = createCommonjsModule(function (module, exports) {
 
 var vueReactiveCookie = {
   install: function install(Vue, options) {
+    if ( options === void 0 ) options = {};
+
     this.Vue = Vue;
     this.convertJSON = typeof options.convertJSON !== 'undefined' ? options.convertJSON : false;
-    this.cookies = this.createNewCookieInstance();
+    this.cookies = this.createNewCookiesInstance();
     this.instance = this.createNewVueInstance();
     this.defineVueInstanceProperties();
     this.updateCookiesInstance();
   },
 
-  createNewCookieInstance: function createNewCookieInstance() {
+  createNewCookiesInstance: function createNewCookiesInstance() {
     var this$1 = this;
 
     return js_cookie.withConverter(function (value) {
-      var decodedValue = decodeURIComponent(value);
+      if (this$1.convertJSON) {
+        var decodedValue = decodeURIComponent(value);
 
-      if (this$1.convertJSON && this$1.isJSON(decodedValue)) {
-        return JSON.parse(decodedValue);
+        if (this$1.isJSON(decodedValue)) {
+          return JSON.parse(decodedValue);
+        }
       }
 
       return value;
